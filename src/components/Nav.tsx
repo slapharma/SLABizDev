@@ -9,6 +9,7 @@ const links = [
   { href: "/outreach/drafts", label: "Drafts" },
   { href: "/outreach/approve", label: "Approve" },
   { href: "/pipeline/run", label: "Run Pipeline" },
+  { href: "/logs", label: "Logs" },
 ];
 
 export default function Nav() {
