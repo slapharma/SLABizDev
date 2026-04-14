@@ -19,18 +19,18 @@ interface CountryStatus {
 // ─── visual config ───────────────────────────────────────────────────────────
 
 const ACTION_COLORS: Record<string, string> = {
-  pipeline_triggered: "bg-zinc-700/40 text-zinc-300",
-  n8n_accepted:       "bg-zinc-700/40 text-zinc-400",
-  n8n_rejected:       "bg-red-900/40 text-red-400",
-  lead_qualified:     "bg-teal-900/30 text-teal-400",
-  lead_qualified_and_enriched: "bg-sky-900/30 text-sky-400",
-  contact_found:      "bg-sky-900/30 text-sky-400",
-  draft_created:      "bg-violet-900/30 text-violet-400",
-  email_sent:         "bg-emerald-900/30 text-emerald-400",
-  bump_1_drafted:     "bg-purple-900/30 text-purple-400",
-  bump_2_drafted:     "bg-purple-900/30 text-purple-400",
-  final_bump_drafted: "bg-purple-900/30 text-purple-300",
-  cadence_complete:   "bg-amber-900/30 text-amber-400",
+  pipeline_triggered: "bg-slate-100 text-slate-600",
+  n8n_accepted:       "bg-slate-100 text-slate-500",
+  n8n_rejected:       "bg-red-100 text-red-600",
+  lead_qualified:     "bg-teal-50 text-teal-700",
+  lead_qualified_and_enriched: "bg-sky-50 text-sky-700",
+  contact_found:      "bg-sky-50 text-sky-700",
+  draft_created:      "bg-violet-50 text-violet-700",
+  email_sent:         "bg-emerald-50 text-emerald-700",
+  bump_1_drafted:     "bg-purple-50 text-purple-700",
+  bump_2_drafted:     "bg-purple-50 text-purple-700",
+  final_bump_drafted: "bg-purple-50 text-purple-600",
+  cadence_complete:   "bg-amber-50 text-amber-700",
 };
 
 const STAGE_STATUS_ORDER = [
@@ -43,12 +43,12 @@ const STAGE_STATUS_ORDER = [
 ];
 
 const STATUS_COLORS: Record<string, string> = {
-  "QUALIFIED":         "bg-zinc-700/50 text-zinc-300",
-  "CONTACT FOUND":     "bg-sky-900/40 text-sky-300",
-  "OUTREACH DRAFTED":  "bg-amber-900/40 text-amber-300",
-  "OUTREACH SENT":     "bg-emerald-900/40 text-emerald-300",
-  "REPLIED":           "bg-violet-900/40 text-violet-300",
-  "ON HOLD":           "bg-orange-900/40 text-orange-300",
+  "QUALIFIED":         "bg-slate-100 text-slate-600",
+  "CONTACT FOUND":     "bg-sky-100 text-sky-700",
+  "OUTREACH DRAFTED":  "bg-amber-100 text-amber-700",
+  "OUTREACH SENT":     "bg-emerald-100 text-emerald-700",
+  "REPLIED":           "bg-violet-100 text-violet-700",
+  "ON HOLD":           "bg-orange-100 text-orange-700",
 };
 
 function timeAgo(ts: string) {
@@ -92,7 +92,7 @@ function CountryCard({ cs }: { cs: CountryStatus }) {
 
   return (
     <div className={`bg-zinc-900 border rounded-xl p-4 space-y-3 ${
-      isError ? "border-red-800/60" : stalled && cs.totalLeads === 0 ? "border-zinc-700/40" : "border-zinc-800"
+      isError ? "border-red-300" : stalled && cs.totalLeads === 0 ? "border-zinc-700/40" : "border-zinc-800"
     }`}>
       <div className="flex items-center justify-between gap-2">
         <span className="font-semibold text-zinc-100 text-sm">{cs.country}</span>
@@ -117,7 +117,7 @@ function CountryCard({ cs }: { cs: CountryStatus }) {
 
       {cs.lastEvent ? (
         <div className={`text-xs rounded px-2 py-1.5 space-y-0.5 ${
-          isError ? "bg-red-900/30 border border-red-800/40" : "bg-zinc-800/50"
+          isError ? "bg-red-50 border border-red-200" : "bg-zinc-800/20"
         }`}>
           <div className="flex items-center justify-between gap-2">
             <ActionBadge action={cs.lastEvent.action} />
@@ -211,22 +211,22 @@ export default function LogsPage() {
           className="flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 disabled:opacity-40 text-zinc-200 text-sm px-4 py-2 rounded-lg transition-colors"
         >
           {loading ? (
-            <span className="inline-block w-3 h-3 border-2 border-zinc-500 border-t-zinc-200 rounded-full animate-spin" />
+            <span className="inline-block w-3 h-3 border-2 border-slate-300 border-t-slate-600 rounded-full animate-spin" />
           ) : "↺"} Refresh
         </button>
       </div>
 
       {error && (
-        <div className="bg-red-950/40 border border-red-800/50 rounded-xl p-4 text-red-300 text-sm">
+        <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-red-700 text-sm">
           <strong>Error loading logs:</strong> {error}
         </div>
       )}
 
       {/* Stalled warning */}
       {!loading && stalledCountries.length > 0 && (
-        <div className="bg-amber-950/30 border border-amber-800/40 rounded-xl p-4">
-          <div className="text-sm font-semibold text-amber-300 mb-2">⚠ Pipeline triggered but no n8n output recorded</div>
-          <p className="text-xs text-amber-200/70 mb-3">
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+          <div className="text-sm font-semibold text-amber-700 mb-2">⚠ Pipeline triggered but no n8n output recorded</div>
+          <p className="text-xs text-amber-600 mb-3">
             These countries show a trigger event with no downstream activity (no leads qualified, no contacts found, no drafts created).
             This usually means a node inside n8n failed silently — check n8n Executions.
           </p>
@@ -241,7 +241,7 @@ export default function LogsPage() {
             href="https://sla-bd.app.n8n.cloud"
             target="_blank"
             rel="noreferrer"
-            className="inline-block mt-3 text-xs text-amber-400 hover:text-amber-300 underline"
+            className="inline-block mt-3 text-xs text-amber-600 hover:text-amber-500 underline"
           >
             Open n8n Executions →
           </a>
@@ -321,7 +321,7 @@ export default function LogsPage() {
                     <tr
                       key={i}
                       className={`hover:bg-zinc-800/30 transition-colors ${
-                        a.action === "n8n_rejected" ? "bg-red-950/20" : ""
+                        a.action === "n8n_rejected" ? "bg-red-50/80" : ""
                       }`}
                     >
                       <td className="px-4 py-2.5 text-zinc-500 text-xs whitespace-nowrap font-mono">

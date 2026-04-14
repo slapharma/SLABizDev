@@ -99,7 +99,7 @@ export default function DraftsPage() {
                 <button
                   onClick={() => deleteDraft(d.id)}
                   disabled={deleting === d.id}
-                  className="text-xs px-3 py-1.5 bg-red-950/50 hover:bg-red-900/60 text-red-400 rounded-lg transition-colors disabled:opacity-50"
+                  className="text-xs px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition-colors disabled:opacity-50"
                 >
                   {deleting === d.id ? "Deleting…" : "✕ Delete Draft"}
                 </button>

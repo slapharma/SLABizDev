@@ -3,18 +3,18 @@ import { fetchLeads } from "@/lib/sheets";
 import Link from "next/link";
 
 const STATUS_COLORS: Record<string, string> = {
-  "QUALIFIED": "bg-zinc-700 text-zinc-200",
-  "CONTACT FOUND": "bg-sky-900/60 text-sky-300",
-  "OUTREACH DRAFTED": "bg-violet-900/60 text-violet-300",
-  "OUTREACH SENT": "bg-emerald-900/60 text-emerald-300",
-  "REPLIED": "bg-teal-900/60 text-teal-300",
-  "ON HOLD": "bg-zinc-800 text-zinc-500",
+  "QUALIFIED":         "bg-slate-100 text-slate-600",
+  "CONTACT FOUND":     "bg-sky-100 text-sky-700",
+  "OUTREACH DRAFTED":  "bg-violet-100 text-violet-700",
+  "OUTREACH SENT":     "bg-emerald-100 text-emerald-700",
+  "REPLIED":           "bg-teal-100 text-teal-700",
+  "ON HOLD":           "bg-zinc-200 text-zinc-500",
 };
 
 const PRIORITY_COLORS: Record<string, string> = {
-  "P1 (high)": "text-red-400",
-  "P2 (medium)": "text-amber-400",
-  "P3 (low)": "text-zinc-500",
+  "P1 (high)":   "text-red-600",
+  "P2 (medium)": "text-amber-600",
+  "P3 (low)":    "text-slate-400",
 };
 
 export default async function LeadsPage({
@@ -93,7 +93,7 @@ export default async function LeadsPage({
               </tr>
             ) : (
               filtered.map((l) => (
-                <tr key={l.id} className="border-b border-zinc-800/50 hover:bg-zinc-800/30 transition-colors">
+                <tr key={l.id} className="border-b border-zinc-800/50 hover:bg-zinc-800/10 transition-colors">
                   <td className="px-4 py-3 font-mono text-xs text-zinc-400">{l.id}</td>
                   <td className="px-4 py-3 text-zinc-300">{l.country}</td>
                   <td className="px-4 py-3">
@@ -137,7 +137,7 @@ function FilterLink({ label, href, active }: { label: string; href: string; acti
       href={href}
       className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${
         active
-          ? "bg-zinc-700 border-zinc-600 text-zinc-100"
+          ? "bg-slate-800 border-slate-700 text-white"
           : "border-zinc-800 text-zinc-400 hover:border-zinc-700 hover:text-zinc-200"
       }`}
     >

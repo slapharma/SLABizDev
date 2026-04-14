@@ -15,12 +15,12 @@ function timeAgo(ts: string) {
 }
 
 const ACTION_COLORS: Record<string, string> = {
-  draft_created: "text-sky-400",
-  email_sent: "text-emerald-400",
-  bump_1_drafted: "text-violet-400",
-  bump_2_drafted: "text-violet-400",
-  cadence_complete: "text-amber-400",
-  lead_qualified_and_enriched: "text-teal-400",
+  draft_created: "text-sky-600",
+  email_sent: "text-emerald-600",
+  bump_1_drafted: "text-violet-600",
+  bump_2_drafted: "text-violet-600",
+  cadence_complete: "text-amber-600",
+  lead_qualified_and_enriched: "text-teal-600",
 };
 
 export default async function Dashboard() {
@@ -81,25 +81,25 @@ export default async function Dashboard() {
 
       {/* Pending actions */}
       {(pendingDrafts > 0 || pendingSent > 0 || unworkedCountries > 0) && (
-        <div className="bg-amber-950/30 border border-amber-800/40 rounded-xl p-5">
-          <div className="text-sm font-semibold text-amber-300 mb-3">⚡ Pending actions</div>
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-5">
+          <div className="text-sm font-semibold text-amber-700 mb-3">⚡ Pending actions</div>
           <ul className="space-y-2">
             {pendingDrafts > 0 && (
               <li className="flex items-center justify-between text-sm">
                 <span className="text-zinc-300">{pendingDrafts} draft{pendingDrafts > 1 ? "s" : ""} awaiting your review</span>
-                <Link href="/outreach/drafts" className="text-amber-400 hover:text-amber-300 text-xs font-medium">Review Drafts →</Link>
+                <Link href="/outreach/drafts" className="text-amber-600 hover:text-amber-500 text-xs font-medium">Review Drafts →</Link>
               </li>
             )}
             {pendingSent > 0 && (
               <li className="flex items-center justify-between text-sm">
                 <span className="text-zinc-300">{pendingSent} outreach email{pendingSent > 1 ? "s" : ""} need cadence trigger</span>
-                <Link href="/outreach/approve" className="text-amber-400 hover:text-amber-300 text-xs font-medium">Mark as Sent →</Link>
+                <Link href="/outreach/approve" className="text-amber-600 hover:text-amber-500 text-xs font-medium">Mark as Sent →</Link>
               </li>
             )}
             {unworkedCountries > 0 && (
               <li className="flex items-center justify-between text-sm">
                 <span className="text-zinc-300">{unworkedCountries} countries not yet started</span>
-                <Link href="/pipeline/run" className="text-amber-400 hover:text-amber-300 text-xs font-medium">Run Sourcing →</Link>
+                <Link href="/pipeline/run" className="text-amber-600 hover:text-amber-500 text-xs font-medium">Run Sourcing →</Link>
               </li>
             )}
           </ul>

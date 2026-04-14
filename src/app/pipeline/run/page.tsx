@@ -82,7 +82,7 @@ export default function RunPipelinePage() {
               onClick={() => toggleCountry(c)}
               className={`text-sm px-3 py-1.5 rounded-lg border transition-colors ${
                 selected.includes(c)
-                  ? "bg-emerald-700/30 border-emerald-600 text-emerald-300"
+                  ? "bg-emerald-50 border-emerald-500 text-emerald-700"
                   : "bg-zinc-800 border-zinc-700 text-zinc-400 hover:text-zinc-200"
               }`}
             >
