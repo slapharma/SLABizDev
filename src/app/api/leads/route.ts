@@ -4,11 +4,10 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   const session = await auth();
-  if (!session?.accessToken) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const token = session?.accessToken as string | undefined;
+  if (!token) return NextResponse.json({ leads: [] });
   try {
-    const leads = await fetchLeads(session.accessToken as string);
+    const leads = await fetchLeads(token);
     return NextResponse.json({ leads });
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 500 });

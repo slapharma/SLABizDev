@@ -17,11 +17,8 @@ interface GmailDraftDetail {
 
 export async function GET() {
   const session = await auth();
-  if (!session?.accessToken) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const token = session.accessToken as string;
+  const token = session?.accessToken as string | undefined;
+  if (!token) return NextResponse.json({ drafts: [] });
 
   // Fetch draft list
   const listRes = await fetch(
@@ -73,13 +70,12 @@ export async function GET() {
 
 export async function DELETE(req: Request) {
   const session = await auth();
-  if (!session?.accessToken) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const delToken = session?.accessToken as string | undefined;
+  if (!delToken) return NextResponse.json({ error: "Sign in to delete drafts" }, { status: 401 });
   const { draftId } = await req.json();
   const res = await fetch(
     `https://gmail.googleapis.com/gmail/v1/users/me/drafts/${draftId}`,
-    { method: "DELETE", headers: { Authorization: `Bearer ${session.accessToken as string}` } }
+    { method: "DELETE", headers: { Authorization: `Bearer ${delToken}` } }
   );
   return NextResponse.json({ ok: res.ok, status: res.status });
 }

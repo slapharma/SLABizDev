@@ -1,5 +1,7 @@
-export { auth as middleware } from "@/auth";
+// Auth middleware disabled — app is publicly accessible.
+// Individual pages/routes handle auth as needed for Sheets access.
+export function middleware() {}
 
 export const config = {
-  matcher: ["/((?!api/auth|login|_next/static|_next/image|favicon.ico).*)"],
+  matcher: [],
 };

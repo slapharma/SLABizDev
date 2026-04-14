@@ -1,14 +1,8 @@
-import { auth } from "@/auth";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
-  const session = await auth();
-  if (!session?.accessToken) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
   const body = await req.json();
-  const { lead_id, sent_date, contact_email, contact_name, company, country } = body;
+  const { lead_id, sent_date, contact_email, contact_name, company, country, operator } = body;
 
   if (!lead_id || !sent_date) {
     return NextResponse.json({ error: "lead_id and sent_date required" }, { status: 400 });
@@ -25,7 +19,7 @@ export async function POST(req: NextRequest) {
       contact_name,
       company,
       country,
-      operator: session.user?.name ?? "CF",
+      operator: operator ?? "SCF",
     }),
   });
 

@@ -1,7 +1,6 @@
 import { auth } from "@/auth";
 import { fetchLeads } from "@/lib/sheets";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 
 const STATUS_COLORS: Record<string, string> = {
   "QUALIFIED": "bg-zinc-700 text-zinc-200",
@@ -24,13 +23,13 @@ export default async function LeadsPage({
   searchParams: Promise<{ country?: string; status?: string; priority?: string }>;
 }) {
   const session = await auth();
-  if (!session) redirect("/login");
+  const token = session?.accessToken as string | undefined;
 
   const params = await searchParams;
 
   let leads: Awaited<ReturnType<typeof fetchLeads>> = [];
   try {
-    leads = await fetchLeads(session.accessToken as string);
+    if (token) leads = await fetchLeads(token);
   } catch {
     // empty state
   }

@@ -1,7 +1,6 @@
 import { auth } from "@/auth";
 import { fetchLeads, fetchActivity } from "@/lib/sheets";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 
 const STATUS_ORDER = ["QUALIFIED", "CONTACT FOUND", "OUTREACH DRAFTED", "OUTREACH SENT", "REPLIED", "ON HOLD"];
 const COUNTRIES = ["Mexico","Brazil","Peru","Chile","Argentina","Venezuela","Caribbean","Japan","South Africa","China","Taiwan","South Korea","Indonesia","Laos","Thailand","Turkey","Israel"];
@@ -26,18 +25,20 @@ const ACTION_COLORS: Record<string, string> = {
 
 export default async function Dashboard() {
   const session = await auth();
-  if (!session) redirect("/login");
+  const token = session?.accessToken as string | undefined;
 
   let leads: Awaited<ReturnType<typeof fetchLeads>> = [];
   let activity: Awaited<ReturnType<typeof fetchActivity>> = [];
 
-  try {
-    [leads, activity] = await Promise.all([
-      fetchLeads(session.accessToken as string),
-      fetchActivity(session.accessToken as string, 20),
-    ]);
-  } catch {
-    // handled below — shows empty state
+  if (token) {
+    try {
+      [leads, activity] = await Promise.all([
+        fetchLeads(token),
+        fetchActivity(token, 20),
+      ]);
+    } catch {
+      // handled below — shows empty state
+    }
   }
 
   const statusCounts = STATUS_ORDER.reduce((acc, s) => {
