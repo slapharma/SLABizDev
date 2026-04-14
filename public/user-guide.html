@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Anatop BD Panel — User Guide</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0f0f11;
+      color: #d4d4d8;
+      line-height: 1.65;
+      font-size: 15px;
+    }
+
+    /* Layout */
+    .layout { display: flex; min-height: 100vh; }
+
+    nav {
+      width: 240px;
+      flex-shrink: 0;
+      background: #18181b;
+      border-right: 1px solid #27272a;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      padding: 28px 0 40px;
+    }
+
+    nav .logo {
+      padding: 0 20px 24px;
+      border-bottom: 1px solid #27272a;
+      margin-bottom: 20px;
+    }
+    nav .logo span {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #71717a;
+    }
+    nav .logo strong {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+      color: #f4f4f5;
+      margin-top: 4px;
+    }
+
+    nav ul { list-style: none; padding: 0 10px; }
+    nav ul li a {
+      display: block;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      color: #a1a1aa;
+      text-decoration: none;
+      transition: background .15s, color .15s;
+    }
+    nav ul li a:hover { background: #27272a; color: #f4f4f5; }
+    nav .section-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: #52525b;
+      padding: 14px 22px 4px;
+    }
+
+    main {
+      flex: 1;
+      min-width: 0;
+      padding: 48px 56px 80px;
+      max-width: 900px;
+    }
+
+    /* Typography */
+    h1 { font-size: 28px; font-weight: 800; color: #fafafa; margin-bottom: 6px; }
+    h2 { font-size: 20px; font-weight: 700; color: #f4f4f5; margin: 48px 0 14px; padding-top: 48px; border-top: 1px solid #27272a; }
+    h3 { font-size: 15px; font-weight: 600; color: #e4e4e7; margin: 28px 0 10px; }
+    p { margin-bottom: 12px; color: #a1a1aa; }
+    strong { color: #e4e4e7; font-weight: 600; }
+    a { color: #34d399; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .meta { font-size: 13px; color: #52525b; margin-bottom: 32px; }
+    .meta a { color: #52525b; }
+    .meta a:hover { color: #a1a1aa; }
+
+    /* Pipeline flow */
+    .pipeline-flow {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin: 16px 0;
+    }
+    .pipeline-flow .step {
+      text-align: center;
+    }
+    .pipeline-flow .step .label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #e4e4e7;
+      display: block;
+    }
+    .pipeline-flow .step .sub {
+      font-size: 11px;
+      color: #52525b;
+      display: block;
+      margin-top: 2px;
+    }
+    .pipeline-flow .step.manual .label { color: #f59e0b; }
+    .pipeline-flow .arrow { color: #3f3f46; font-size: 18px; }
+
+    /* Callout */
+    .callout {
+      background: #1c1917;
+      border-left: 3px solid #d97706;
+      border-radius: 0 8px 8px 0;
+      padding: 12px 16px;
+      margin: 16px 0;
+      font-size: 14px;
+      color: #a8a29e;
+    }
+    .callout.green { background: #052e16; border-color: #16a34a; color: #86efac; }
+    .callout strong { color: #fef3c7; }
+    .callout.green strong { color: #bbf7d0; }
+
+    /* Lists */
+    ul, ol { margin: 10px 0 14px 20px; color: #a1a1aa; }
+    ul li, ol li { margin-bottom: 6px; }
+    ul li strong, ol li strong { color: #e4e4e7; }
+
+    /* Steps list */
+    .steps { list-style: none; margin-left: 0; counter-reset: steps; }
+    .steps li {
+      counter-increment: steps;
+      display: flex;
+      gap: 14px;
+      margin-bottom: 10px;
+      align-items: flex-start;
+    }
+    .steps li::before {
+      content: counter(steps);
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      background: #27272a;
+      color: #a1a1aa;
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+    }
+
+    /* Code */
+    code {
+      background: #27272a;
+      color: #a5f3fc;
+      font-family: "SF Mono", "Cascadia Code", monospace;
+      font-size: 12px;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* Tables */
+    .table-wrap { overflow-x: auto; margin: 16px 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    thead tr { background: #18181b; }
+    th {
+      text-align: left;
+      padding: 10px 14px;
+      color: #71717a;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      border-bottom: 1px solid #27272a;
+    }
+    td {
+      padding: 10px 14px;
+      border-bottom: 1px solid #1f1f22;
+      color: #a1a1aa;
+      vertical-align: top;
+    }
+    td strong { color: #e4e4e7; }
+    tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: #18181b; }
+
+    /* Status badge */
+    .badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+    .badge-qualified   { background: #1e3a2f; color: #34d399; }
+    .badge-contact     { background: #1e3050; color: #60a5fa; }
+    .badge-drafted     { background: #312e0a; color: #fbbf24; }
+    .badge-sent        { background: #1a2e1a; color: #86efac; }
+    .badge-replied     { background: #2e1e3a; color: #c084fc; }
+    .badge-hold        { background: #2a2018; color: #d97706; }
+
+    /* Rules list */
+    .rules { list-style: none; margin-left: 0; }
+    .rules li {
+      display: flex;
+      gap: 12px;
+      padding: 10px 14px;
+      border-bottom: 1px solid #1f1f22;
+      align-items: flex-start;
+    }
+    .rules li:last-child { border-bottom: none; }
+    .rules .num {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      background: #3f1515;
+      color: #f87171;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Quick ref */
+    .quick-ref { list-style: none; margin-left: 0; }
+    .quick-ref li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 9px 14px;
+      border-bottom: 1px solid #1f1f22;
+      gap: 16px;
+    }
+    .quick-ref li:last-child { border-bottom: none; }
+    .quick-ref .task { color: #e4e4e7; font-size: 13.5px; }
+    .quick-ref .where { color: #52525b; font-size: 12.5px; text-align: right; }
+    .quick-ref .where a { color: #71717a; }
+    .quick-ref .where a:hover { color: #34d399; }
+
+    /* Contact cards */
+    .contact-list { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+    .contact-card {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 10px;
+      padding: 14px 18px;
+      min-width: 200px;
+    }
+    .contact-card .name { font-weight: 700; color: #f4f4f5; font-size: 14px; }
+    .contact-card .role { font-size: 12px; color: #52525b; margin: 2px 0 6px; }
+    .contact-card a { font-size: 13px; color: #34d399; }
+
+    /* Card wrapper for sections */
+    .card {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 14px 0;
+    }
+    .card-header {
+      padding: 12px 16px;
+      background: #1f1f23;
+      border-bottom: 1px solid #27272a;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: #71717a;
+    }
+    .card-body { padding: 2px 0; }
+
+    /* WF badges */
+    .wf { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px; margin-right: 4px; }
+    .wf1 { background:#1a2030; color:#93c5fd; }
+    .wf2 { background:#1c2a1c; color:#86efac; }
+    .wf3 { background:#1e2a1e; color:#4ade80; }
+    .wf4 { background:#2a1c2a; color:#c084fc; }
+    .wf5 { background:#2a2010; color:#fbbf24; }
+    .wf6 { background:#2a1818; color:#f87171; }
+
+    @media (max-width: 768px) {
+      .layout { flex-direction: column; }
+      nav { width: 100%; height: auto; position: static; padding: 16px; }
+      nav ul { display: flex; flex-wrap: wrap; gap: 4px; }
+      nav ul li a { padding: 4px 10px; font-size: 12px; }
+      main { padding: 28px 20px 60px; }
+      .pipeline-flow { gap: 4px; }
+      .quick-ref li { flex-direction: column; align-items: flex-start; gap: 2px; }
+      .quick-ref .where { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- Sidebar nav -->
+  <nav>
+    <div class="logo">
+      <span>SLA Pharmagroup</span>
+      <strong>Anatop BD Panel</strong>
+    </div>
+    <div class="section-label">Overview</div>
+    <ul>
+      <li><a href="#what">What this system does</a></li>
+    </ul>
+    <div class="section-label">Webapp</div>
+    <ul>
+      <li><a href="#dashboard">Dashboard</a></li>
+      <li><a href="#run-pipeline">Run Pipeline</a></li>
+      <li><a href="#leads">Leads</a></li>
+      <li><a href="#drafts">Drafts</a></li>
+      <li><a href="#approve">Approve / Mark as Sent</a></li>
+    </ul>
+    <div class="section-label">n8n</div>
+    <ul>
+      <li><a href="#workflows">Workflow overview</a></li>
+      <li><a href="#debug">Debugging runs</a></li>
+      <li><a href="#reauth">Re-authorising Google</a></li>
+    </ul>
+    <div class="section-label">Reference</div>
+    <ul>
+      <li><a href="#sheet">Google Sheet</a></li>
+      <li><a href="#rules">Hard rules</a></li>
+      <li><a href="#quickref">Quick reference</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- Main content -->
+  <main>
+
+    <h1>User Guide</h1>
+    <p class="meta">
+      Webapp: <a href="https://sla-biz-dev.vercel.app" target="_blank">sla-biz-dev.vercel.app</a>
+      &nbsp;·&nbsp;
+      n8n: <a href="https://sla-bd.app.n8n.cloud" target="_blank">sla-bd.app.n8n.cloud</a>
+      &nbsp;·&nbsp;
+      Last updated: 2026-04-14
+    </p>
+
+    <!-- What it does -->
+    <h2 id="what">What this system does</h2>
+    <p>The Anatop BD Panel automates the business development pipeline for finding and contacting pharmaceutical distribution partners for <strong>Anatop</strong> (topical diltiazem for chronic anal fissure) across 17 target countries.</p>
+
+    <div class="pipeline-flow">
+      <div class="step">
+        <span class="label">Source companies</span>
+        <span class="sub">WF2</span>
+      </div>
+      <span class="arrow">→</span>
+      <div class="step">
+        <span class="label">Find contacts</span>
+        <span class="sub">WF3</span>
+      </div>
+      <span class="arrow">→</span>
+      <div class="step">
+        <span class="label">Draft outreach</span>
+        <span class="sub">WF4</span>
+      </div>
+      <span class="arrow">→</span>
+      <div class="step manual">
+        <span class="label">You send</span>
+        <span class="sub">manual</span>
+      </div>
+      <span class="arrow">→</span>
+      <div class="step">
+        <span class="label">Follow-up cadence</span>
+        <span class="sub">WF5 + WF6</span>
+      </div>
+    </div>
+
+    <div class="callout green">
+      <strong>Nothing is ever sent automatically.</strong> Every outreach email is created as a Gmail draft. You review it and send it yourself. The system only creates drafts.
+    </div>
+
+    <!-- ===== WEBAPP ===== -->
+    <h2 id="dashboard">Dashboard</h2>
+    <p>The main view at <a href="https://sla-biz-dev.vercel.app" target="_blank">sla-biz-dev.vercel.app</a>. Shows the full pipeline state at a glance.</p>
+    <ul>
+      <li><strong>Status cards</strong> — count of leads at each stage (Qualified → Contact Found → Outreach Drafted → Sent → Replied → On Hold)</li>
+      <li><strong>Pending actions</strong> — an amber box appears when something needs your attention: drafts to review, emails to mark as sent, countries not yet started</li>
+      <li><strong>Countries worked</strong> — which countries have leads and how many have been sent</li>
+      <li><strong>Activity feed</strong> — live log of every pipeline action (draft created, email sent, bump drafted, etc.)</li>
+    </ul>
+    <div class="callout">Refresh the page to see the latest data — it reads directly from the Google Sheet each load.</div>
+
+    <h2 id="run-pipeline">Run Pipeline</h2>
+    <p>How you kick off work on a new country or re-run a stage. Go to <strong>Run Pipeline</strong> from the dashboard or navigate to <code>/pipeline/run</code>.</p>
+
+    <h3>Step 1 — Pick countries</h3>
+    <p>Click individual countries to select them (they turn green with a ✓), or use the group shortcut buttons:</p>
+    <ul>
+      <li>LatAm North — Mexico, Venezuela, Caribbean</li>
+      <li>LatAm South — Brazil, Peru, Chile, Argentina</li>
+      <li>Asia Pacific — Japan, South Korea, Indonesia, Laos, Thailand, Taiwan</li>
+      <li>Greater China — China, Taiwan</li>
+      <li>EMEA + Israel — South Africa, Turkey, Israel</li>
+    </ul>
+
+    <h3>Step 2 — Choose pipeline stage</h3>
+    <div class="card">
+      <div class="card-body">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Stage</th><th>What it does</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><strong>Source companies</strong> <span class="wf wf2">WF2</span></td>
+                <td>Searches Apollo + Explorium for pharma companies with a gastroenterology focus. An AI scores each company 1–5 and writes P1/P2/P3 qualified leads to the Google Sheet.</td>
+              </tr>
+              <tr>
+                <td><strong>Find contacts</strong> <span class="wf wf3">WF3</span></td>
+                <td>For each QUALIFIED lead, searches Apollo for a C-suite or Director-level contact with a verified email address. Updates the lead's Contact Name, Title, and Email columns.</td>
+              </tr>
+              <tr>
+                <td><strong>Draft outreach</strong> <span class="wf wf4">WF4</span></td>
+                <td>For each CONTACT FOUND lead (P1 by default), Claude AI writes a personalised outreach email and saves it as a draft in <code>cflack@slapharmagroup.com</code> Gmail.</td>
+              </tr>
+              <tr>
+                <td><strong>All stages (full run)</strong></td>
+                <td>Starts with sourcing. Use this for a brand-new country — stages will proceed as leads move through the pipeline.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <h3>Step 3 — Options</h3>
+    <ul>
+      <li><strong>Priority filter</strong> — P1 only (score ≥ 4), P1 + P2 (score ≥ 3), or All. Draft Outreach defaults to P1 only to preserve email quality.</li>
+      <li><strong>Operator</strong> — SCF (Clifton) or JS (Justin). Used to attribute activity log entries.</li>
+    </ul>
+
+    <h3>Step 4 — Click Run</h3>
+    <p>Each selected country shows a green <strong>✓ Started</strong> or red error after the trigger fires. n8n runs countries one at a time to stay within API rate limits — each country takes <strong>1–3 minutes</strong> depending on how many companies are found.</p>
+    <p>After running, watch the <strong>Dashboard activity feed</strong> to see progress in real time.</p>
+
+    <h2 id="leads">Leads</h2>
+    <p>A full table of every lead in the Google Sheet. Filter by status, country, or priority. Shows company name, website, contact details, and current status.</p>
+    <p>Use this to audit the pipeline, find a specific company, or check whether a contact was found.</p>
+
+    <h2 id="drafts">Drafts</h2>
+    <p>Shows all Gmail drafts with "Anatop" in the subject line, pulled live from <code>cflack@slapharmagroup.com</code>. For each draft you can:</p>
+    <ul>
+      <li>Read the full email body before sending</li>
+      <li><strong>Delete</strong> a draft if the quality isn't good enough — the lead stays in the Sheet at CONTACT FOUND status, so you can re-run Draft Outreach to regenerate it</li>
+    </ul>
+    <div class="callout">Only drafts with "Anatop" in the subject are shown. Your other Gmail drafts are never touched.</div>
+
+    <h2 id="approve">Approve / Mark as Sent</h2>
+    <p>After you <strong>manually send</strong> a draft from Gmail, come here to record it. This is the step that unlocks automated follow-ups.</p>
+    <p>Enter the lead ID (e.g. <code>ANTP-MX-005</code>) and the date you sent it. Clicking Approve does three things:</p>
+    <ol class="steps">
+      <li>Updates the lead's status to <span class="badge badge-sent">OUTREACH SENT</span> in the Google Sheet</li>
+      <li>Records the send date and last touch date</li>
+      <li>Starts the <strong>follow-up cadence</strong> — n8n will automatically draft bump emails at Day +14, Day +30, and Day +60</li>
+    </ol>
+    <div class="callout"><strong>Don't skip this step.</strong> If you send the email from Gmail but don't record it here, no follow-ups will be drafted and the lead's status will stay as OUTREACH DRAFTED.</div>
+
+    <!-- ===== N8N ===== -->
+    <h2 id="workflows">n8n — Workflow overview</h2>
+    <p>Access at <a href="https://sla-bd.app.n8n.cloud" target="_blank">sla-bd.app.n8n.cloud</a>. You don't need n8n for day-to-day work — the webapp handles everything. But it's useful for checking run history, editing logic, or manually triggering a workflow.</p>
+
+    <div class="card">
+      <div class="card-body">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>#</th><th>Name</th><th>Triggered by</th><th>What it does</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><span class="wf wf1">WF1</span></td>
+                <td><strong>Data Webhook</strong></td>
+                <td>All other workflows + webapp</td>
+                <td>Reads and writes the Google Sheet. The central data layer for the whole system.</td>
+              </tr>
+              <tr>
+                <td><span class="wf wf2">WF2</span></td>
+                <td><strong>Country Sourcing</strong></td>
+                <td>Run Pipeline → Source companies</td>
+                <td>Serper competitive web search + Apollo + Explorium company fetch + LLM qualification → appends qualified leads to Sheet.</td>
+              </tr>
+              <tr>
+                <td><span class="wf wf3">WF3</span></td>
+                <td><strong>Contact Research</strong></td>
+                <td>Run Pipeline → Find contacts</td>
+                <td>Apollo people search per QUALIFIED company → updates Sheet with Contact Name, Title, Email, LinkedIn.</td>
+              </tr>
+              <tr>
+                <td><span class="wf wf4">WF4</span></td>
+                <td><strong>Outreach Drafting</strong></td>
+                <td>Run Pipeline → Draft outreach</td>
+                <td>Claude Sonnet (via OpenRouter) drafts a personalised email per CONTACT FOUND lead → creates Gmail draft → updates Sheet to OUTREACH DRAFTED.</td>
+              </tr>
+              <tr>
+                <td><span class="wf wf5">WF5</span></td>
+                <td><strong>Approval Handler</strong></td>
+                <td>Approve page in webapp</td>
+                <td>Updates Sheet status to OUTREACH SENT, records send date → kicks off WF6.</td>
+              </tr>
+              <tr>
+                <td><span class="wf wf6">WF6</span></td>
+                <td><strong>Follow-up Cadence</strong></td>
+                <td>WF5 (automatically)</td>
+                <td>Waits 14 days → drafts bump email → waits 16 more days → drafts bump 2 → waits 30 more days → drafts final bump. Marks lead ON HOLD if no reply after all bumps.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <h2 id="debug">Checking a failed run</h2>
+    <ol class="steps">
+      <li>Go to <a href="https://sla-bd.app.n8n.cloud" target="_blank">sla-bd.app.n8n.cloud</a></li>
+      <li>Click <strong>Executions</strong> in the left sidebar</li>
+      <li>Find the red (failed) execution — it shows the workflow name and timestamp</li>
+      <li>Click it to see which node failed and the full error message</li>
+      <li>Fix the cause (see common causes below) and re-trigger from the webapp</li>
+    </ol>
+    <p><strong>Common causes of failure:</strong></p>
+    <ul>
+      <li>Apollo API key expired or over quota — check the Apollo dashboard</li>
+      <li>Google OAuth token needs re-authorising — see below</li>
+      <li>Explorium returned 0 results — this is not a failure, just no companies found for that country</li>
+      <li>OpenRouter rate limit — wait a few minutes and re-run</li>
+    </ul>
+
+    <h2 id="reauth">Re-authorising Google credentials</h2>
+    <p>Google OAuth tokens typically expire after 6 months of inactivity. If Google Sheets or Gmail stops working:</p>
+    <ol class="steps">
+      <li>Go to <a href="https://sla-bd.app.n8n.cloud" target="_blank">sla-bd.app.n8n.cloud</a></li>
+      <li>Click <strong>Credentials</strong> in the left sidebar</li>
+      <li>Click <strong>Google Sheets account</strong> or <strong>Gmail account</strong></li>
+      <li>Click <strong>Reconnect</strong> and complete the OAuth flow using <strong>Sam's Google account</strong> (the account that owns the Sheet)</li>
+    </ol>
+
+    <!-- ===== SHEET ===== -->
+    <h2 id="sheet">The Google Sheet</h2>
+    <p>The sheet is the single source of truth. Every n8n workflow and the webapp reads from and writes to the same spreadsheet. <strong>Do not rename columns or tabs.</strong></p>
+
+    <h3>Tabs</h3>
+    <ul>
+      <li><strong>Leads</strong> — one row per company. Key columns: ID, Company, Status, Priority, Country, Contact Name, Contact Email, Notes</li>
+      <li><strong>Activity</strong> — timestamped log of every pipeline event</li>
+      <li><strong>Countries</strong> — summary stats per country (sourced, contacted, sent counts)</li>
+    </ul>
+
+    <h3>Status values</h3>
+    <div class="card">
+      <div class="card-body">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Status</th><th>Meaning</th></tr></thead>
+            <tbody>
+              <tr><td><span class="badge badge-qualified">QUALIFIED</span></td><td>Company found and scored by WF2. Contact research not yet done.</td></tr>
+              <tr><td><span class="badge badge-contact">CONTACT FOUND</span></td><td>Apollo found a named contact with a verified email. Ready for outreach drafting.</td></tr>
+              <tr><td><span class="badge badge-drafted">OUTREACH DRAFTED</span></td><td>Gmail draft created. Awaiting your review and send.</td></tr>
+              <tr><td><span class="badge badge-sent">OUTREACH SENT</span></td><td>You sent the email and recorded it in the Approve page. Follow-up cadence is running.</td></tr>
+              <tr><td><span class="badge badge-replied">REPLIED</span></td><td>Contact replied. Update this manually when a reply comes in — the system can't detect replies automatically.</td></tr>
+              <tr><td><span class="badge badge-hold">ON HOLD</span></td><td>No reply after all three follow-up bumps. Set by WF6 at end of cadence.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== RULES ===== -->
+    <h2 id="rules">Hard rules — never violated by the system</h2>
+    <p>These are enforced in every n8n workflow and in every AI prompt. They cannot be overridden by changing pipeline settings.</p>
+    <div class="card">
+      <div class="card-body">
+        <ul class="rules">
+          <li>
+            <span class="num">1</span>
+            <span><strong>No auto-send.</strong> The system creates Gmail drafts only. The Gmail "send" API is never called.</span>
+          </li>
+          <li>
+            <span class="num">2</span>
+            <span><strong>No invented facts.</strong> Every AI-written email uses only confirmed Anatop information: diltiazem formulation, Alfasigma manufacturer, Mexico track record.</span>
+          </li>
+          <li>
+            <span class="num">3</span>
+            <span><strong>No "Anoheal".</strong> This competitor product name is banned from all AI email output.</span>
+          </li>
+          <li>
+            <span class="num">4</span>
+            <span><strong>No Armstrong.</strong> Armstrong Pharmaceutical is a direct competitor. They are blocked from the sourcing pipeline and from outreach.</span>
+          </li>
+          <li>
+            <span class="num">5</span>
+            <span><strong>English only.</strong> All outreach emails are written in English, regardless of the target country.</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ===== QUICK REF ===== -->
+    <h2 id="quickref">Quick reference</h2>
+    <div class="card">
+      <div class="card-body">
+        <ul class="quick-ref">
+          <li>
+            <span class="task">Start work on a new country</span>
+            <span class="where">Run Pipeline → Source companies</span>
+          </li>
+          <li>
+            <span class="task">Check what needs doing today</span>
+            <span class="where">Dashboard → Pending actions banner</span>
+          </li>
+          <li>
+            <span class="task">Review AI-written email drafts</span>
+            <span class="where">Outreach → Drafts</span>
+          </li>
+          <li>
+            <span class="task">Record that you sent an email</span>
+            <span class="where">Outreach → Approve / Mark as Sent</span>
+          </li>
+          <li>
+            <span class="task">See all leads and their status</span>
+            <span class="where">Leads page</span>
+          </li>
+          <li>
+            <span class="task">Re-run draft generation for a lead</span>
+            <span class="where">Drafts → Delete bad draft → Run Pipeline → Draft outreach</span>
+          </li>
+          <li>
+            <span class="task">Debug a failed n8n run</span>
+            <span class="where"><a href="https://sla-bd.app.n8n.cloud" target="_blank">sla-bd.app.n8n.cloud</a> → Executions</span>
+          </li>
+          <li>
+            <span class="task">Edit the Google Sheet directly</span>
+            <span class="where">Open in Google Drive (same account as OAuth)</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ===== CONTACT ===== -->
+    <h2 id="contact">Contact</h2>
+    <div class="contact-list">
+      <div class="contact-card">
+        <div class="name">Clifton Flack</div>
+        <div class="role">Built and maintains this system</div>
+        <a href="mailto:cflack@slapharmagroup.com">cflack@slapharmagroup.com</a>
+      </div>
+      <div class="contact-card">
+        <div class="name">Sam</div>
+        <div class="role">Google account owner (Sheets + Gmail OAuth)</div>
+      </div>
+      <div class="contact-card">
+        <div class="name">Justin</div>
+        <div class="role">Co-operator — select "JS" when running on his behalf</div>
+      </div>
+    </div>
+
+  </main>
+</div>
+</body>
+</html>
