@@ -12,6 +12,10 @@ const links = [
   { href: "/logs", label: "Logs" },
 ];
 
+const externalLinks = [
+  { href: "/user-guide.html", label: "User Guide" },
+];
+
 export default function Nav() {
   const path = usePathname();
   return (
@@ -33,6 +37,18 @@ export default function Nav() {
             >
               {l.label}
             </Link>
+          ))}
+          <span className="text-zinc-700 mx-1">|</span>
+          {externalLinks.map((l) => (
+            <a
+              key={l.href}
+              href={l.href}
+              target="_blank"
+              rel="noreferrer"
+              className="px-3 py-1.5 rounded-md text-sm text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/50 transition-colors"
+            >
+              {l.label} ↗
+            </a>
           ))}
         </div>
         <button
