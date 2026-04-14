@@ -28,7 +28,8 @@ export default function RunPipelinePage() {
   const [priority, setPriority] = useState("P1");
   const [operator, setOperator] = useState("SCF");
   const [running, setRunning] = useState(false);
-  const [results, setResults] = useState<{ country: string; status: number }[] | null>(null);
+  const [results, setResults] = useState<{ country: string; status: number; error?: string }[] | null>(null);
+  const [apiError, setApiError] = useState<string | null>(null);
 
   function toggleCountry(c: string) {
     setSelected((s) => s.includes(c) ? s.filter((x) => x !== c) : [...s, c]);
@@ -42,14 +43,24 @@ export default function RunPipelinePage() {
     if (!selected.length) return alert("Select at least one country.");
     setRunning(true);
     setResults(null);
-    const res = await fetch("/api/pipeline/run", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ countries: selected, stage, priority, operator }),
-    });
-    const data = await res.json();
-    setResults(data.triggered ?? []);
-    setRunning(false);
+    setApiError(null);
+    try {
+      const res = await fetch("/api/pipeline/run", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ countries: selected, stage, priority, operator }),
+      });
+      const data = await res.json();
+      if (data.error) {
+        setApiError(data.error);
+      } else {
+        setResults(data.triggered ?? []);
+      }
+    } catch (e) {
+      setApiError(String(e));
+    } finally {
+      setRunning(false);
+    }
   }
 
   return (
@@ -161,16 +172,23 @@ export default function RunPipelinePage() {
         )}
       </div>
 
+      {/* API error */}
+      {apiError && (
+        <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-red-700 text-sm">
+          <strong>Pipeline error:</strong> {apiError}
+        </div>
+      )}
+
       {/* Results */}
       {results && (
         <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
           <div className="text-sm font-semibold text-zinc-300 mb-3">Pipeline triggered</div>
           <ul className="space-y-2">
             {results.map((r) => (
-              <li key={r.country} className="flex items-center justify-between text-sm">
+              <li key={r.country} className="flex items-center justify-between text-sm gap-4">
                 <span className="text-zinc-200">{r.country}</span>
-                <span className={r.status === 200 ? "text-emerald-400 text-xs" : "text-red-400 text-xs"}>
-                  {r.status === 200 ? "✓ Started" : `Error ${r.status}`}
+                <span className={r.status === 200 ? "text-emerald-600 text-xs" : "text-red-500 text-xs"}>
+                  {r.status === 200 ? "✓ Started" : r.error ? `Error: ${r.error}` : `HTTP ${r.status || "0 — unreachable"}`}
                 </span>
               </li>
             ))}
