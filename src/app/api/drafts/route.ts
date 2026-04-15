@@ -15,6 +15,20 @@ interface GmailDraftDetail {
   messageId: string;
 }
 
+// Gmail's API returns `snippet` HTML-entity-encoded (e.g. `I&#39;m` for `I'm`).
+// Decode here so the frontend can render as plain text in a <p>/<pre>.
+function decodeEntities(s: string): string {
+  return s
+    .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(parseInt(n, 10)))
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, n) => String.fromCharCode(parseInt(n, 16)))
+    .replace(/&amp;/g, "&")
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&nbsp;/g, " ");
+}
+
 export async function GET() {
   const session = await auth();
   const token = session?.accessToken as string | undefined;
@@ -57,9 +71,9 @@ export async function GET() {
 
     details.push({
       id: draft.id,
-      subject,
-      to,
-      snippet: d.message?.snippet ?? "",
+      subject: decodeEntities(subject),
+      to: decodeEntities(to),
+      snippet: decodeEntities(d.message?.snippet ?? ""),
       body: body.trim(),
       messageId: d.message?.id ?? "",
     });
