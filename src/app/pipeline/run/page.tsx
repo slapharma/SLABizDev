@@ -22,6 +22,56 @@ const STAGES = [
   { value: "all", label: "All stages (full run)" },
 ];
 
+// ─── Default qualification prompt ────────────────────────────────────────────
+// Sections are labelled so users can locate and edit specific parts.
+// This is sent to WF2 as `qualify_prompt` and used by LLM Qualify Companies.
+const DEFAULT_QUALIFY_PROMPT = `You are a business development analyst for SLA Pharma evaluating potential in-country distribution or licensing partners for Anatop™ — a licensed 2% diltiazem topical cream for chronic anal fissure, with EU Marketing Authorisation (2024) and first-line status per ACPGBI and ASCRS colorectal guidelines.
+
+IDEAL PARTNER (score 4–5):
+- Established gastroenterology, colorectal, or proctology Rx franchise
+- Specialty sales force calling on GI specialists or colorectal surgeons
+- Demonstrated regulatory capability (Rx product registrations, not OTC-only importing)
+- Evidence of pharmaceutical marketing capability — product launches, medical education, KOL engagement, congress presence, or reimbursement submissions in their territory
+- Established relationships with KOLs in colorectal surgery, gastroenterology, or proctology
+- Independent or mid-size pharma/distributor — niche Rx product matters to them
+- No competing anal fissure Rx in current portfolio
+
+ACCEPTABLE PARTNER (score 3):
+- Broad specialty Rx pharma or distributor with hospital/GI channel
+- Has regulatory infrastructure but GI not primary focus
+- Some evidence of Rx marketing or medical affairs activity, even if not GI-specific
+- Worth engaging to assess fit
+
+WEAK FIT (score 1–2):
+- Pure generics house with no specialty Rx or marketing capability
+- Pure OTC consumer health (no Rx infrastructure, no medical affairs)
+- Cardiology-only, oncology-only, or devices — no GI franchise
+- No evidence of KOL engagement or specialist sales force
+- Logistics/wholesale-only distributor with no marketing capability
+
+HARD DISQUALIFIERS — set competitor_flag: true, omit from output:
+- Any company marketing a product specifically labelled for anal fissure
+- Topical diltiazem products: Angiotrofin (Armstrong/Mexico), Anoheal, any branded or licensed topical diltiazem for fissure
+- Topical GTN/nitroglycerin products: Rectogesic, Rectiv, or any GTN product labelled for anal fissure
+- Topical nifedipine products labelled or routinely promoted for anal fissure
+- ProStrakan / Kyowa Kirin Rx licensees for Rectogesic in the territory
+- Laboratorios Armstrong (Mexico only)
+- Any company the competitor analysis identifies as carrying a competing diltiazem, GTN, or nifedipine anal fissure product
+
+SOFT CONFLICTS — score normally, note in notes field:
+- Hemorrhoid-only OTC brands (Preparation H, Anusol, Proctosedyl, Scheriproct, Ultraproct) — flag but do not disqualify automatically
+
+SCORING RUBRIC:
+5 = GI/colorectal Rx franchise + specialist sales force + regulatory capability + active pharmaceutical marketing/KOL engagement. Perfect fit.
+4 = Strong specialty pharma with GI or hospital distribution, evidence of Rx launches or medical education activity. Good fit.
+3 = Broad Rx pharma or distributor with some GI/hospital channel and basic marketing capability. Moderate fit.
+2 = General pharma, no clear GI focus, limited Rx marketing evidence. Long shot.
+1 = No relevant channel — OTC-only, logistics-only, devices, generics without Rx, or wrong therapeutic area entirely.
+
+Return ONLY a valid JSON array — no markdown fences, no explanation outside the array:
+[{"company": string, "website": string, "gastro_fit_score": number, "competitor_flag": boolean, "disqualify_reason": string|null, "notes": string, "priority": "P1"|"P2"|"P3"}]
+Priority rule: P1 = score >= 4, P2 = score = 3, P3 = score <= 2. Omit competitor_flag=true entries entirely.`;
+
 export default function RunPipelinePage() {
   const [selected, setSelected] = useState<string[]>([]);
   const [stage, setStage] = useState("source");
@@ -30,6 +80,11 @@ export default function RunPipelinePage() {
   const [running, setRunning] = useState(false);
   const [results, setResults] = useState<{ country: string; status: number; error?: string }[] | null>(null);
   const [apiError, setApiError] = useState<string | null>(null);
+
+  // Prompt editor
+  const [promptOpen, setPromptOpen] = useState(false);
+  const [qualifyPrompt, setQualifyPrompt] = useState(DEFAULT_QUALIFY_PROMPT);
+  const isModified = qualifyPrompt !== DEFAULT_QUALIFY_PROMPT;
 
   function toggleCountry(c: string) {
     setSelected((s) => s.includes(c) ? s.filter((x) => x !== c) : [...s, c]);
@@ -48,7 +103,13 @@ export default function RunPipelinePage() {
       const res = await fetch("/api/pipeline/run", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ countries: selected, stage, priority, operator }),
+        body: JSON.stringify({
+          countries: selected,
+          stage,
+          priority,
+          operator,
+          qualify_prompt: qualifyPrompt,
+        }),
       });
       const data = await res.json();
       if (data.error) {
@@ -154,6 +215,51 @@ export default function RunPipelinePage() {
             </select>
           </div>
         </div>
+      </section>
+
+      {/* Qualification prompt editor */}
+      <section className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
+        <button
+          onClick={() => setPromptOpen((o) => !o)}
+          className="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-zinc-800/50 transition-colors"
+        >
+          <div className="flex items-center gap-3">
+            <h2 className="text-sm font-semibold text-zinc-300">Qualification prompt</h2>
+            {isModified && (
+              <span className="text-xs bg-amber-500/20 text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded-full">
+                Modified
+              </span>
+            )}
+          </div>
+          <span className="text-zinc-500 text-sm">{promptOpen ? "▲ Hide" : "▼ Edit"}</span>
+        </button>
+
+        {promptOpen && (
+          <div className="px-6 pb-6 space-y-3 border-t border-zinc-800">
+            <p className="text-xs text-zinc-500 pt-4">
+              This prompt is sent to the LLM during WF2 company qualification. Edit any section — ideal partner criteria, disqualifiers, or scoring rubric.
+              Changes apply to this run only and are not saved permanently.
+            </p>
+            <textarea
+              value={qualifyPrompt}
+              onChange={(e) => setQualifyPrompt(e.target.value)}
+              rows={28}
+              className="w-full bg-zinc-950 border border-zinc-700 text-zinc-200 text-xs font-mono rounded-lg px-4 py-3 focus:outline-none focus:border-zinc-500 resize-y leading-relaxed"
+              spellCheck={false}
+            />
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-zinc-600">{qualifyPrompt.length} chars</span>
+              {isModified && (
+                <button
+                  onClick={() => setQualifyPrompt(DEFAULT_QUALIFY_PROMPT)}
+                  className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
+                >
+                  ↺ Reset to default
+                </button>
+              )}
+            </div>
+          </div>
+        )}
       </section>
 
       {/* Run button */}

@@ -51,13 +51,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  const { countries, stage, priority, operator, sheet_id, apollo_key } = body as {
+  const { countries, stage, priority, operator, sheet_id, apollo_key, qualify_prompt } = body as {
     countries?: string[];
     stage?: string;
     priority?: string;
     operator?: string;
     sheet_id?: string;
     apollo_key?: string;
+    qualify_prompt?: string;
   };
 
   if (!countries?.length || !stage) {
@@ -86,6 +87,7 @@ export async function POST(req: NextRequest) {
           operator: operator ?? "SCF",
           sheet_id: sheetId,
           apollo_key: apolloKey,
+          ...(qualify_prompt ? { qualify_prompt } : {}),
         }),
       });
       status = res.status;
